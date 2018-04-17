@@ -3,7 +3,6 @@
 
 #include "stdafx.h"
 #include "Declare.h"
-
 using namespace std;
 
 Data* LayThongTin(wstring& file) {
@@ -17,27 +16,37 @@ Data* LayThongTin(wstring& file) {
 	Data* arr = new Data[lines];
 	for (int i = 0; i < lines; i++) {
 		getline(rf, (arr + i)->MSSV, L',');
+		loai_bo_khoang_trang_nhay_kep((arr + i)->MSSV);
 		getline(rf, (arr + i)->HoTen, L',');
+		loai_bo_khoang_trang_nhay_kep((arr + i)->HoTen);
 		getline(rf, (arr + i)->Nganh, L',');
+		loai_bo_khoang_trang_nhay_kep((arr + i)->Nganh);
 		//truong du lieu nien khoa
 		getline(rf, temp, L',');
-		(arr + i)->NienKhoa = stoi(temp);
+		loai_bo_khoang_trang_nhay_kep(temp);
+		try
+		{
+			(arr + i)->NienKhoa = stoi(temp);
+		}
+		catch (const std::invalid_argument& e)
+		{
+			(arr + i)->NienKhoa = -1;
+		}
 		getline(rf, (arr + i)->NgaySinh, L',');
+		loai_bo_khoang_trang_nhay_kep((arr + i)->NgaySinh);
 		getline(rf, (arr + i)->HinhAnh, L',');
+		loai_bo_khoang_trang_nhay_kep((arr + i)->HinhAnh);
 		getline(rf, (arr + i)->MoTa, L',');
+		loai_bo_khoang_trang_nhay_kep((arr + i)->MoTa);
 		getline(rf, (arr + i)->Email, L',');
+		loai_bo_khoang_trang_nhay_kep((arr + i)->Email);
 		getline(rf, (arr + i)->SoThich, L'\n');
+		loai_bo_khoang_trang_nhay_kep((arr + i)->SoThich);
 	}
 	rf.close();
 	return arr;
 }
-int TimTag(const wstring& chuoiCanTim, const wstring& chuoiHTML, int pos) {
-	wstring::size_type n = chuoiHTML.find(chuoiCanTim, pos);
-	if (n == wstring::npos) {
-		return NOT_MATCH;
-	}
-	return n;
-}
+
 void XoaNoiDung(wstring& chuoi, int dau, int& cuoi) {
 	//sua lai cuoi do sau khi xoa cuoi doi 1 doan = cuoi - dau
 	chuoi.erase(chuoi.begin() + dau, chuoi.begin() + cuoi); //[first,last)
@@ -58,36 +67,36 @@ int SinhVien(wstring& chuoiHTML,const Data& dulieu) {
 	//title
 	tagMo = L"<title>";
 	tagDong = L"</title>";
-	viTriDau = TimTag(tagMo, chuoiHTML) + tagMo.length();
-	viTriCuoi = TimTag(tagDong, chuoiHTML, viTriDau);
+	viTriDau = TimChuoi(tagMo, chuoiHTML) + tagMo.length();
+	viTriCuoi = TimChuoi(tagDong, chuoiHTML, viTriDau);
 	NoiDung = InHoa(wstring(L"HMCUS - ") + dulieu.HoTen);
 	ChenThongTin(viTriDau, viTriCuoi, NoiDung, chuoiHTML);
 	//Ho ten - MSSV
 	tagMo = wstring(L"<span class=\"Personal_FullName\">");
 	tagDong = L"</span>";
-	viTriDau = TimTag(tagMo, chuoiHTML) + tagMo.length();
-	viTriCuoi = TimTag(tagDong, chuoiHTML, viTriDau);
+	viTriDau = TimChuoi(tagMo, chuoiHTML) + tagMo.length();
+	viTriCuoi = TimChuoi(tagDong, chuoiHTML, viTriDau);
 	NoiDung = InHoa(dulieu.HoTen + wstring(L" - ") + dulieu.MSSV);
 	ChenThongTin(viTriDau, viTriCuoi, NoiDung, chuoiHTML);
 	//Chuyen Nganh
 	tagMo = wstring(L"<div class=\"Personal_Department\">");
 	tagDong = L"</div>";
-	viTriDau = TimTag(tagMo, chuoiHTML) + tagMo.length();
-	viTriCuoi = TimTag(tagDong, chuoiHTML, viTriDau);
+	viTriDau = TimChuoi(tagMo, chuoiHTML) + tagMo.length();
+	viTriCuoi = TimChuoi(tagDong, chuoiHTML, viTriDau);
 	NoiDung = InHoa(dulieu.Nganh);
 	ChenThongTin(viTriDau, viTriCuoi, NoiDung, chuoiHTML);
 	//Email
 	tagMo = wstring(L"<div class=\"Personal_Phone\">");
 	tagDong = L"</div>";
-	viTriDau = TimTag(tagMo, chuoiHTML) + tagMo.length();
-	viTriCuoi = TimTag(tagDong, chuoiHTML, viTriDau);
+	viTriDau = TimChuoi(tagMo, chuoiHTML) + tagMo.length();
+	viTriCuoi = TimChuoi(tagDong, chuoiHTML, viTriDau);
 	NoiDung = wstring(L"Email: ") + dulieu.Email;
 	ChenThongTin(viTriDau, viTriCuoi, NoiDung, chuoiHTML);
 	//Hinh anh ca nhan
 	tagMo = wstring(L"<div class=\"Personal_HinhcanhanKhung\">");
 	tagDong = L"</div>";
-	viTriDau = TimTag(tagMo, chuoiHTML) + tagMo.length();
-	viTriCuoi = TimTag(tagDong, chuoiHTML, viTriDau);
+	viTriDau = TimChuoi(tagMo, chuoiHTML) + tagMo.length();
+	viTriCuoi = TimChuoi(tagDong, chuoiHTML, viTriDau);
 	NoiDung = wstring(L"<img src=\"Images/") + dulieu.HinhAnh + wstring(L"\" class=\"Personal_Hinhcanhan\" />");
 	ChenThongTin(viTriDau, viTriCuoi, NoiDung, chuoiHTML);
 	//Thong tin ca nhan
@@ -100,8 +109,8 @@ int SinhVien(wstring& chuoiHTML,const Data& dulieu) {
 	for (int i = 0; i < 5; i++) {
 		tagMo = wstring(L"<li>");
 		tagDong = L"</li>";
-		viTriDau = TimTag(tagMo, chuoiHTML, viTriCuoi) + tagMo.length();//tiep tuc tu vi tri truoc do
-		viTriCuoi = TimTag(tagDong, chuoiHTML, viTriDau);
+		viTriDau = TimChuoi(tagMo, chuoiHTML, viTriCuoi) + tagMo.length();//tiep tuc tu vi tri truoc do
+		viTriCuoi = TimChuoi(tagDong, chuoiHTML, viTriDau);
 		NoiDung = arr[i];
 		ChenThongTin(viTriDau, viTriCuoi, NoiDung, chuoiHTML);
 	}
@@ -111,15 +120,15 @@ int SinhVien(wstring& chuoiHTML,const Data& dulieu) {
 	int pos = viTriCuoi; //luu lai de sau con chen so thich vao
 	tagMo = wstring(L"<ul class=\"TextInList\">");
 	tagDong = L"</ul>";
-	viTriDau = TimTag(tagMo, chuoiHTML,viTriCuoi) + tagMo.length();//tiep tuc tu vi tri truoc do
-	viTriCuoi = TimTag(tagDong, chuoiHTML, viTriDau);
+	viTriDau = TimChuoi(tagMo, chuoiHTML,viTriCuoi) + tagMo.length();//tiep tuc tu vi tri truoc do
+	viTriCuoi = TimChuoi(tagDong, chuoiHTML, viTriDau);
 	XoaNoiDung(chuoiHTML, viTriDau, viTriCuoi);
 	//dem so so thich
 	int dem = 1; //neu ko co so thich thi mac dinh la NULL nen dem = 1
-	int n = TimTag(L",", dulieu.SoThich);
+	int n = TimChuoi(L',', dulieu.SoThich);
 	while (n != NOT_MATCH) {
 		dem++;
-		n = TimTag(L",", dulieu.SoThich,n+1);
+		n = TimChuoi(L',', dulieu.SoThich,n+1);
 	}
 	//lay du lieu
 	arr = new wstring[dem];
@@ -145,15 +154,15 @@ int SinhVien(wstring& chuoiHTML,const Data& dulieu) {
 	//Mo ta ban than
 	tagMo = wstring(L"<div class=\"Description\">");
 	tagDong = L"</div>";
-	viTriDau = TimTag(tagMo, chuoiHTML) + tagMo.length();
-	viTriCuoi = TimTag(tagDong, chuoiHTML, viTriDau);
+	viTriDau = TimChuoi(tagMo, chuoiHTML) + tagMo.length();
+	viTriCuoi = TimChuoi(tagDong, chuoiHTML, viTriDau);
 	NoiDung = dulieu.MoTa;
 	ChenThongTin(viTriDau, viTriCuoi, NoiDung, chuoiHTML);
 	//Nguoi thuc hien
 	tagMo = wstring(L"TH2012/03</br>");
 	tagDong = L"</br>";
-	viTriDau = TimTag(tagMo, chuoiHTML, viTriCuoi) + tagMo.length();//tiep tuc tu vi tri truoc do
-	viTriCuoi = TimTag(tagDong, chuoiHTML, viTriDau);
+	viTriDau = TimChuoi(tagMo, chuoiHTML, viTriCuoi) + tagMo.length();//tiep tuc tu vi tri truoc do
+	viTriCuoi = TimChuoi(tagDong, chuoiHTML, viTriDau);
 	NoiDung = L"1712875 - Nguyen Manh Tuan";
 	ChenThongTin(viTriDau, viTriCuoi, NoiDung, chuoiHTML);
 	return 0;

@@ -111,3 +111,23 @@ wstring InHoa(const wstring& chuoi) {
 	}
 	return temp;
 }
+int TimChuoi(const wstring& chuoiCanTim, const wstring& chuoiHTML, int pos) {
+	wstring::size_type n = chuoiHTML.find(chuoiCanTim, pos);
+	if (n == wstring::npos) {
+		return NOT_MATCH;
+	}
+	return n;
+}
+int TimChuoi(wchar_t KiTu, const wstring& chuoiHTML, int pos) {
+	wstring::size_type n = chuoiHTML.find(KiTu, pos);
+	if (n == wstring::npos) {
+		return NOT_MATCH;
+	}
+	return n;
+}
+wstring& loai_bo_khoang_trang_nhay_kep(wstring& str) {
+	wstring::size_type from = str.find_first_not_of(L" \"'");
+	wstring::size_type to = str.find_last_not_of(L" \"'");
+	str = str.substr(from, to - from + 1);
+	return str;
+}

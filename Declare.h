@@ -30,9 +30,11 @@ int DuaVaoChuoi(wstring& filenguon, wstring& chuoidich);
 void ChenThongTin(int vitriDau, int& vitriCuoi, const wstring& noiDung, wstring& chuoiHTML);//luu y: viet theo cau truc file html nhat dinh
 wstring InHoa(const wstring& chuoi);
 wstring Tach(wchar_t kitu, wstring& chuoi, wstring::size_type pos = 0); //tra ra chuoi dung truoc kitu
+int TimChuoi(const wstring& ChuoiCanTim, const wstring& chuoi, int pos = 0);//luu y: viet theo cau truc file html nhat dinh
+int TimChuoi(wchar_t KiTu, const wstring& chuoi, int pos = 0);//luu y: viet theo cau truc file html nhat dinh
+wstring& loai_bo_khoang_trang_nhay_kep(wstring&);
 //main
 Data* LayThongTin(wstring& fileDaChinhSua);
-int TimTag(const wstring& ChuoiCanTim, const wstring& chuoi,int pos = 0);//luu y: viet theo cau truc file html nhat dinh
 void XoaNoiDung(wstring& chuoi, int dau, int& cuoi);//xoa noi dung tu dau -> cuoi
 void ChenNoiDung(const wstring& chuoiCanChen, wstring& chuoiDuocChen, int pos);
 void TaoHTML(wstring& fileHTML, wstring& SinhVien);
