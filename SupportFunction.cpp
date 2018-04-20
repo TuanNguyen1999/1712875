@@ -2,7 +2,6 @@
 //
 #include "stdafx.h"
 #include "Declare.h"
-#include <cwctype>
 int ChinhSua(const wstring& fileTho, wstring& fileMoi) {
 	wchar_t wc;
 	wstring text;
@@ -13,14 +12,9 @@ int ChinhSua(const wstring& fileTho, wstring& fileMoi) {
 	if (!rf.is_open()) {
 		return DONT_EXISTS; //DONT_EXISTS
 	}
-	while (rf.good())
-	{
-		rf.get(wc);
-		text.push_back(wc);
-	}
-	if (!rf.eof()) {
-		return UNKNOW_ERROR; //UNKNOW_ERROR
-	}
+	std::wstringstream sstr;
+	sstr << rf.rdbuf();
+	text = sstr.str();
 	LamSach(text);
 	wf << text;
 	rf.close();
@@ -78,19 +72,17 @@ wstring Tach(wchar_t kitu, wstring& chuoi, wstring::size_type pos) {
 int DuaVaoChuoi(wstring& filenguon, wstring& chuoidich) {
 	wchar_t wc;
 	chuoidich.resize(0);//xoa noi dung trong chuoi
-	wstring text;
+	std::locale lo(std::locale::empty(), new std::codecvt_utf8<wchar_t>);
 	wifstream rf;
+	rf.imbue(lo);
 	rf.open(filenguon);
 	if (!rf.is_open()) {
 		return DONT_EXISTS; //DONT_EXISTS
 	}
-	while (rf.good())
-	{
-		rf.get(wc);
-		chuoidich.push_back(wc);
-	}
-	if (!rf.eof()) {
-		return UNKNOW_ERROR; //UNKNOW_ERROR
+	else {
+		std::wstringstream ss;
+		ss << rf.rdbuf();
+		chuoidich = ss.str();
 	}
 	rf.close();
 	return GOOD; //OK

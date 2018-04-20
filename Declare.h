@@ -3,6 +3,11 @@
 #include <string>
 #include <fstream>
 #include <iostream>
+#include <io.h>	//_setmode for console output
+#include <fcntl.h>// _O_WTEXT -- Wide character mode
+#include <locale> //change charset to utf-8 for file output
+#include <codecvt> //std::codecvt_utf8<wchar_t> --  //conversion between wide character and utf-8
+#include <sstream> //string buffer to recieve file buffer
 using std::wstring;
 using std::string;
 using std::wifstream;
