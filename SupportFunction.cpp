@@ -3,7 +3,6 @@
 #include "stdafx.h"
 #include "Declare.h"
 int ChinhSua(const wstring& fileTho, wstring& fileMoi) {
-	wchar_t wc;
 	wstring text;
 	wofstream wf;
 	wifstream rf;
@@ -22,55 +21,23 @@ int ChinhSua(const wstring& fileTho, wstring& fileMoi) {
 	return GOOD; //OK
 }
 void LamSach(wstring& data) {
-	wstring::size_type b_pos = wstring::npos;
-	wstring::size_type e_pos = wstring::npos;
-	// xoa dau
-	for (wstring::size_type i = 0; i < data.length(); i++) {
-		wchar_t wc = data.at(i);
-		if (wc != L'\n' && wc != L' ') {
-			b_pos = i;
-			break;
-		}
-	}
-	if(b_pos != wstring::npos)
-		data.erase(0, b_pos);
-	// xoa cuoi
-	for (wstring::reverse_iterator i = data.rbegin(); i != data.rend(); i++) {
-		if ((*i) != L'\n' && (*i) != L' ') {
-			e_pos = data.rfind(*i);
-			break;
-		}
-	}
-	if (e_pos != wstring::npos)
-		data.erase(e_pos + 1);
+	wstring::size_type from, to;
+	wchar_t ws[] = L"\t\n ";
+	from = data.find_first_not_of(ws);
+	to = data.find_last_not_of(ws);
+	data = data.substr(from, to - from + 1);
 	return;
 }
-int DemKiTu(wchar_t kitu, wstring& file) {
+int SoDong(const wstring& file) {
 	int dem = 0;
-	wchar_t wc;
-	wifstream rf;
-	rf.open(file);
-	if (rf.eof()) //empty string
-		return 0;
-	while (!rf.eof()){
-		wc = rf.get();
-		if (wc == kitu) dem++;
+	wifstream rf(file);
+	wstring temp;
+	while (getline(rf, temp)) {
+		dem++;
 	}
-	rf.close();
 	return dem;
 }
-wstring Tach(wchar_t kitu, wstring& chuoi, wstring::size_type pos) {
-	wstring::size_type n = chuoi.find(kitu,pos);
-	if (n == wstring::npos)
-		return NULL;
-	wstring temp;
-	for (wstring::size_type i = pos; i < n; i++) {
-		temp.push_back(chuoi.at(i));
-	}
-	return temp;
-}
 int DuaVaoChuoi(wstring& filenguon, wstring& chuoidich) {
-	wchar_t wc;
 	chuoidich.resize(0);//xoa noi dung trong chuoi
 	std::locale lo(std::locale::empty(), new std::codecvt_utf8<wchar_t>);
 	wifstream rf;
@@ -96,10 +63,11 @@ void ChenThongTin(int vitriDau, int& vitriCuoi, const wstring& noiDung, wstring&
 	vitriCuoi = vitriDau + noiDung.length();
 }
 wstring InHoa(const wstring& chuoi) {
+	std::locale lo(""); //use enviroment locale
+	const std::ctype<wchar_t>& f = std::use_facet<std::ctype<wchar_t>>(lo);//make ctype functions adapting enviroment locale
 	wstring temp;
-	int i = 0;
-	while (chuoi[i]) {
-		temp.push_back(towupper(chuoi[i++]));
+	for (int i = 0; i < chuoi.length(); i++) {
+		temp.push_back(f.toupper(chuoi[i]));
 	}
 	return temp;
 }
